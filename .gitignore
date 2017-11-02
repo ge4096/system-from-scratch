@@ -3,6 +3,7 @@
 
 # asm object files
 *.s
+!asm/test/test_expected_output.s
 
 # asm executables
 asm/bin/asm
