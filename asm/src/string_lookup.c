@@ -36,8 +36,8 @@ static string_lookup_node_t * create_string_lookup_node(void){
     return node;
 }
 
-void register_string_lookup_value(string_lookup_t * string_lookup, char * name,
-                                  int32_t value){
+void register_string_lookup_value(string_lookup_t * string_lookup,
+                                  const char * name, int32_t value){
     string_lookup_node_t ** node = (string_lookup_node_t **)string_lookup;
     uint32_t name_index = 0;
     uint32_t name_length = (uint32_t)strlen(name);
@@ -59,7 +59,8 @@ void register_string_lookup_value(string_lookup_t * string_lookup, char * name,
     (*node)->value = value;
 }
 
-int32_t string_lookup_value(string_lookup_t * string_lookup, char * name){
+int32_t string_lookup_value(string_lookup_t * string_lookup,
+                            const char * name){
     string_lookup_node_t * node = *((string_lookup_node_t **)string_lookup);
     uint32_t name_index = 0;
     uint32_t name_length = (uint32_t)strlen(name);

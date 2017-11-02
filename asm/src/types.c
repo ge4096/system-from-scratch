@@ -30,3 +30,14 @@ void write_to_output_buffer(assembler_status_t * assembler_status,
     }
     assembler_status->memory_location += num_bytes;
 }
+
+void write_to_output_buffer_aligned(assembler_status_t * assembler_status,
+                                    uint8_t * bytes, uint32_t num_bytes,
+                                    uint32_t alignment){
+    uint8_t empty_byte = 0;
+    while(assembler_status->memory_location % alignment != 0){
+        write_to_output_buffer(assembler_status, &empty_byte, 1);
+    }
+
+    write_to_output_buffer(assembler_status, bytes, num_bytes);
+}

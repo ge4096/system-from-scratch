@@ -2,13 +2,16 @@
 
 #include <stdint.h>
 
+#include "definition_list.h"
+#include "definition_parser.h"
 #include "directive_parser.h"
 #include "instruction_parser.h"
 #include "types.h"
 
 void init_parsers(void){
-    init_instructions();
+    init_definitions();
     init_directives();
+    init_instructions();
 }
 
 #include <stdio.h>
@@ -26,15 +29,16 @@ void parse_line(line_tokens_t * line_tokens,
             printf(", ");
         }
     }
+
     if(line_tokens->num_tokens != 0){
         switch(line_tokens->type){
             case NONE:
                 break;
             case LABEL:
-                //parse_label(line_tokens, assembler_status);
+                parse_label(line_tokens, assembler_status);
                 break;
             case DEFINE:
-                //parse_define(line_tokens, assembler_status);
+                parse_define(line_tokens, assembler_status);
                 break;
             case INSTRUCTION:
                 if((line_tokens->tokens)[0][0] == '.'){
@@ -51,4 +55,5 @@ void parse_line(line_tokens_t * line_tokens,
 void free_parsers(void){
     free_instructions();
     free_directives();
+    free_definitions();
 }

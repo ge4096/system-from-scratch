@@ -25,6 +25,10 @@ int types_test(void){
     TEST_ASSERT((assembler_status.output_buffer)[bytes_to_write - 1] ==
                 (bytes_to_write - 1) % 256);
 
+    const uint32_t alignment_size = 256;
+    write_to_output_buffer_aligned(&assembler_status, NULL, 0, alignment_size);
+    TEST_ASSERT(assembler_status.memory_location % alignment_size == 0);
+
     free_assembler_status(&assembler_status);
     TEST_ASSERT(assembler_status.output_buffer == NULL);
 

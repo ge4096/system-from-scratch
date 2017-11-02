@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include "common_test.h"
+#include "definition_list_test.h"
+#include "label_log_test.h"
 #include "string_lookup_test.h"
 #include "types_test.h"
 
@@ -11,6 +13,8 @@ static int run_tests(void){
     tests_failed += common_test();
     tests_failed += types_test();
     tests_failed += string_lookup_test();
+    tests_failed += definition_list_test();
+    tests_failed += label_log_test();
 
     printf("[%s:%d] %d tests failed\n", __FILE__, __LINE__, tests_failed);
     return tests_failed;

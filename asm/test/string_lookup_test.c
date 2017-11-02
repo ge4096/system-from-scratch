@@ -12,14 +12,12 @@ int string_lookup_test(void){
     string_lookup_t string_lookup;
     init_string_lookup(&string_lookup);
 
-    TEST_ASSERT((void *)string_lookup == NULL);
     TEST_ASSERT(string_lookup_value(&string_lookup, "a") ==
                 DEFAULT_STRING_LOOKUP_VALUE);
 
     register_string_lookup_value(&string_lookup, "a", 0);
     register_string_lookup_value(&string_lookup, "aa", 1);
     register_string_lookup_value(&string_lookup, "ab", 2);
-    TEST_ASSERT((void *)string_lookup != NULL);
     TEST_ASSERT(string_lookup_value(&string_lookup, "a") == 0);
     TEST_ASSERT(string_lookup_value(&string_lookup, "A") == 0);
     TEST_ASSERT(string_lookup_value(&string_lookup, "aa") == 1);
@@ -28,7 +26,6 @@ int string_lookup_test(void){
                 DEFAULT_STRING_LOOKUP_VALUE);
 
     free_string_lookup(&string_lookup);
-    TEST_ASSERT((void *)string_lookup == NULL);
     TEST_ASSERT(string_lookup_value(&string_lookup, "a") ==
                 DEFAULT_STRING_LOOKUP_VALUE);
 
