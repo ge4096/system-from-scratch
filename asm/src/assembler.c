@@ -81,7 +81,7 @@ int assemble(FILE * in_file, FILE * out_file, char * in_file_name){
                 else if(read_char == '/'){
                     current_state = COMMENT_POSSIBLE_START;
                 }
-                else if(!is_whitespace(read_char)){
+                else if(!is_whitespace(read_char) && (read_char != ';')){
                     current_state = OPERATION_OR_LABEL;
                 }
                 break;

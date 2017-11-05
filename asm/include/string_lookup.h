@@ -7,10 +7,9 @@
 
 typedef void * string_lookup_t;
 
-void register_string_lookup_value(string_lookup_t * string_lookup,
-                                  const char * name, int32_t value);
-int32_t string_lookup_value(string_lookup_t * string_lookup,
-                            const char * name);
+void register_string_lookup_value(string_lookup_t * string_lookup, char * name,
+                                  int32_t value);
+int32_t string_lookup_value(string_lookup_t * string_lookup, char * name);
 void free_string_lookup(string_lookup_t * string_lookup);
 
 static inline void init_string_lookup(string_lookup_t * string_lookup){

@@ -21,7 +21,7 @@ static definition_list_entry_t * create_definition_list_entry(uint32_t value){
 }
 
 void register_definition_list_value(definition_list_t * definition_list,
-                                    const char * name, uint32_t value){
+                                    char * name, uint32_t value){
     definition_list_entry_t ** entry;
     definition_list_entry_t * next_entry;
 
@@ -33,8 +33,8 @@ void register_definition_list_value(definition_list_t * definition_list,
     (*entry)->next = next_entry;
 }
 
-int definition_list_value(definition_list_t * definition_list,
-                          const char * name, uint32_t * value){
+int definition_list_value(definition_list_t * definition_list, char * name,
+                          uint32_t * value){
     definition_list_entry_t * entry;
 
     entry = *((definition_list_entry_t **)definition_list);

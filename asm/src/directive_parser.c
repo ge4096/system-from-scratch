@@ -13,7 +13,7 @@
     assembler_status->parser_success = 1;                                   \
 }
 
-typedef enum {ALIGN, BYTE, DATA, STRING} directive_t;
+typedef enum {ALIGN, BYTE, DATA, STRING, BLANK} directive_t;
 
 static string_lookup_t directive_lookup;
 
@@ -25,6 +25,7 @@ void init_directives(void){
     register_string_lookup_value(&directive_lookup, "word", (int32_t)DATA);
     register_string_lookup_value(&directive_lookup, "data", (int32_t)DATA);
     register_string_lookup_value(&directive_lookup, "string", (int32_t)STRING);
+    register_string_lookup_value(&directive_lookup, "blank", (int32_t)BLANK);
 }
 
 static void parse_align(line_tokens_t * line_tokens,
@@ -127,6 +128,34 @@ static void parse_string(line_tokens_t * line_tokens,
                            (uint32_t)strlen((line_tokens->tokens)[1]) + 1);
 }
 
+static void parse_blank(line_tokens_t * line_tokens,
+                         assembler_status_t * assembler_status){
+    if(line_tokens->num_tokens != 2){
+        DIRECTIVE_ERROR("Found %d operands for %s (expected 1)",
+                        line_tokens->num_tokens - 1, (line_tokens->tokens)[0]);
+        return;
+    }
+
+    uint32_t blank_bytes;
+    if((read_literal((line_tokens->tokens)[1], &blank_bytes) != 0) &&
+       (definition_list_value(assembler_status->define_list,
+        (line_tokens->tokens)[1], &blank_bytes) != 0)){
+        DIRECTIVE_ERROR("Could not read operand %d to %s", 1,
+                        (line_tokens->tokens)[0]);
+        return;
+    }
+    if((int32_t)blank_bytes < 0){
+        DIRECTIVE_ERROR("Blank byte size cannot be negative");
+        return;
+    }
+
+    uint8_t blank_byte = 0;
+    uint32_t byte_index;
+    for(byte_index = 0; byte_index < blank_bytes; ++byte_index){
+        write_to_output_buffer(assembler_status, &blank_byte, 1);
+    }
+}
+
 void parse_directive(line_tokens_t * line_tokens,
                      assembler_status_t * assembler_status){
     assembler_status->parser_success = 0;
@@ -149,6 +178,9 @@ void parse_directive(line_tokens_t * line_tokens,
                 break;
             case STRING:
                 parse_string(line_tokens, assembler_status);
+                break;
+            case BLANK:
+                parse_blank(line_tokens, assembler_status);
                 break;
         }
     }

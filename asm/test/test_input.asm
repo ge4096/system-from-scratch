@@ -6,6 +6,7 @@ my_define = 1; my_define_2 = my_define // This is a trailing comment.
 My_Define = 2
 
 my_alignment_size = 4
+my_blank_size = 4
 
 	my_large_define = 1000
 	my_negative_define = -42
@@ -24,7 +25,12 @@ my_label:
 .align 2
 .align 2
 .byte my_negative_define
+.word my_label
 
-    .string	""
-    .string	"abc"
-    .string "\"Escape\ncharacters!\""
+    .string	"";
+    .string	"abc";
+    .string	"\"Escape\ncharacters!\"";
+
+.blank 0x10;
+.blank 0;
+.blank my_blank_size;
