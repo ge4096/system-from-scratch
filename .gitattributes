@@ -1,0 +1,15 @@
+* text=auto eol=lf whitespace=trailing-space,-indent-with-non-tab,tab-in-indent,tabwidth=4
+
+*.h text linguist-language=C
+*.c text linguist-language=C
+
+*.sh text linguist-language=Shell
+
+*.asm text linguist-language=Assembly
+*.s -text diff
+
+Makefile text whitespace=indent-with-non-tab,-tab-in-indent,tabwidth=8 linguist-language=Makefile
+
+.gitattributes text
+.gitignore text
+*.md text linguist-documentation
