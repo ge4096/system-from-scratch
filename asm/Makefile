@@ -1,13 +1,14 @@
-TARGET := ./bin/asm
-TESTTARGET := ./test/asm-test
+TARGET := ./bin/sfsasm
+TESTTARGET := ./test/sfsasm-test
 LIBS := 
 CC := gcc
 CFLAGS := -g -Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wshadow -Wconversion
 INC := -I./include
 TESTINC := -I./test/include
 
-.PHONY: default test clean
+.PHONY: all default test clean
 
+all: default test
 default: $(TARGET)
 test: $(TESTTARGET)
 
