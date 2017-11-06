@@ -8,6 +8,9 @@
 *.asm text linguist-language=Assembly
 *.s -text diff
 
+*.tex text linguist-language=TeX
+*.pdf binary
+
 Makefile text whitespace=indent-with-non-tab,-tab-in-indent,tabwidth=8 linguist-language=Makefile
 
 .gitattributes text

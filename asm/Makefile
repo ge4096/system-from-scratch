@@ -13,11 +13,11 @@ default: $(TARGET)
 test: $(TESTTARGET)
 
 SOURCES := $(shell find ./src -type f -name '*.c')
-OBJECTS := $(patsubst ./src/%, ./build/%, $(SOURCES:.c=.o))
+OBJECTS := $(patsubst ./src/%,./build/%,$(SOURCES:.c=.o))
 HEADERS := $(wildcard ./include/*.h)
 
 TESTSOURCES := $(shell find ./test -type f -name '*.c')
-TESTOBJECTS := $(patsubst ./test/%, ./build/test/%, $(TESTSOURCES:.c=.o))
+TESTOBJECTS := $(patsubst ./test/%,./build/test/%,$(TESTSOURCES:.c=.o))
 TESTHEADERS := $(wildcard ./test/include/*.h)
 
 ./build/%.o: ./src/%.c $(HEADERS)

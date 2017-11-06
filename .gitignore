@@ -5,6 +5,10 @@
 *.s
 !asm/test/test_expected_output.s
 
-# asm executables
-asm/bin/asm
-asm/test/asm-test
+# sfsasm executables
+asm/bin/sfsasm
+asm/test/sfsasm-test
+
+# LaTeX build files
+*.aux
+*.log
