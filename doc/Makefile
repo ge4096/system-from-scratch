@@ -7,7 +7,8 @@ all: sfsasm
 sfsasm: ./sfsasm.pdf
 
 ./%.pdf: ./%/main.tex
-	$(LATEX) -jobname=$(patsubst %.pdf,./%/main,$@) $<
+	$(LATEX) -jobname=$(patsubst %.pdf,./%/main,$@) -interaction=batchmode $<
+	$(LATEX) -jobname=$(patsubst %.pdf,./%/main,$@) -interaction=batchmode $<
 	mv $(patsubst %.pdf,./%/main.pdf,$@) $@
 
 clean:

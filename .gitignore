@@ -12,3 +12,4 @@ asm/test/sfsasm-test
 # LaTeX build files
 *.aux
 *.log
+*.toc

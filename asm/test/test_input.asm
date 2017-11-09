@@ -5,8 +5,8 @@
 my_define = 1; my_define_2 = my_define // This is a trailing comment.
 My_Define = 2
 
-my_alignment_size = 4
-my_blank_size = 4
+my_alignment_size=4
+my_blank_size=4
 
 	my_large_define = 1000
 	my_negative_define = -42

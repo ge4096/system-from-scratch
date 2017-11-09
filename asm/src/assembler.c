@@ -89,6 +89,9 @@ int assemble(FILE * in_file, FILE * out_file, char * in_file_name){
                 if(is_whitespace(read_char)){
                     current_state = FIRST_OPERAND_SEPARATOR;
                 }
+                else if(read_char == '='){
+                    current_state = DEFINE_SEPARATOR;
+                }
                 else if(read_char == ':'){
                     current_state = LABEL_END;
                 }
@@ -195,6 +198,7 @@ int assemble(FILE * in_file, FILE * out_file, char * in_file_name){
                 PARSE_LINE;
                 break;
             case DEFINE_SEPARATOR:
+                ADD_TO_BUFFER('\0');
                 line_tokens.type = DEFINE;
                 break;
             case OPERAND:

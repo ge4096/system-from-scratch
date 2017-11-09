@@ -1,8 +1,65 @@
 \documentclass{article}
 
+\usepackage[letterpaper, margin=1.5in]{geometry}
+\usepackage[defaultsans]{droidsans}
+\usepackage[defaultmono]{droidmono}
+\usepackage{tcolorbox}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\newtcolorbox{codebox}[1]{colback=black!10!white, colframe=black!90!white, arc=0em, adjusted title=#1}
+
 \begin{document}
-\title{The System from Scratch Assembler Specification}
-\author{}
-\date{January 1, 1970}
-\maketitle
+\vspace*{\fill}
+\begin{flushright}
+{\Huge\bf The System from Scratch Assembler Specification}\\
+\vspace{2em}
+{\Large Version 0.0.0}
+\end{flushright}
+\vspace*{\fill}
+\pagebreak{}
+
+\tableofcontents
+\pagebreak{}
+
+\section{Introduction}
+The System from Scratch Assembler (or {\tt sfsasm}) is a program.
+
+\section{Syntax}
+\subsection{Literals}
+
+\subsection{Labels}
+
+\subsection{Defines}
+
+\subsection{Instructions}
+
+\subsection{Directives}
+In addition to the instructions supported by the System from Scratch ISA, {\tt sfsasm} supports several pseudo-instruction directives for manipulating memory contents within the program being assembled. Directives are similar in syntax to instructions, with a directive name followed by some operands. Each directive name begins with a {\tt .} to distinguish them from actual instructions.
+
+The {\tt .align} directive inserts zero bytes starting from the current location in memory so the start of the next entry in memory will have an address which is a multiple of the operand to {\tt .align}. The operand to {\tt .align} can be an octal, hexadecimal, or positive decimal literal or the name of a define.
+
+\subsection{Comments}
+{\tt sfsasm} supports single-line comments. In {\tt sfsasm}, a single-line comment starts with {\tt //} and ends with a new line. Comments can occur anywhere in the code and are ignored by the assembler.
+
+\begin{codebox}{Comments}
+\begin{verbatim}
+// This is a single-line comment.
+
+jmp my_label; // Comments are ignored by the assembler.
+
+//
+// Multi-line comments can be effectively created by
+// joining together several single-line comments.
+//
+\end{verbatim}
+\end{codebox}
+
+\begin{verbatim}
+my_define = 1
+my_other_define = my_define
+.data my_other_define
+my_define = 2
+.data my_other_define
+\end{verbatim}
 \end{document}
