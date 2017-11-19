@@ -1,5 +1,17 @@
 \input{./common/preamble.tex}
 
+\usepackage{bytefield}
+
+\newlength{\maxheight}
+\setlength{\maxheight}{\heightof{W}}
+
+\newcommand{\baselinealign}[1]{\centering\raisebox{0pt}[\maxheight][0pt]{#1}}
+
+\bytefieldsetup{endianness=big,bitwidth=0.03125\textwidth,bitformatting=\footnotesize,boxformatting=\baselinealign}
+
+\newtcolorbox{opbox}{colback=black!10!white, colframe=black!90!white, arc=0em}
+\newcommand{\opdesc}[2]{\begin{opbox}{\tt sfsasm} Syntax: #1, RTL: #2\end{opbox}}
+
 \begin{document}
 \vspace*{\fill}
 \begin{flushright}
@@ -14,5 +26,212 @@
 \pagebreak{}
 
 \section{Introduction}
-This document defines the System from Scratch Instruction Set Architecture (or the SfS ISA), which aims to describe a basic computer architecture.
+This document defines the System from Scratch Instruction Set Architecture (or the SfS ISA), which aims to describe a basic but fully-functional computer architecture.
+
+\section{Registers}
+The SfS ISA uses 16 registers. A brief summary of these registers is shown in Table ref.
+
+\begin{tabularx}{\textwidth}{| c | c | X |} \hline
+Number & {\tt sfsasm} Names & Description \\ \hline
+0 & {\tt \%0} & Always zero. Cannot be written. \\ \hline
+1 & {\tt \%1}, {\tt \%a} & \\ \hline
+2 & {\tt \%2}, {\tt \%b} & \\ \hline
+3 & {\tt \%3}, {\tt \%c} & \\ \hline
+4 & {\tt \%4}, {\tt \%d} & \\ \hline
+5 & {\tt \%5}, {\tt \%e} & \\ \hline
+6 & {\tt \%6}, {\tt \%f} & \\ \hline
+7 & {\tt \%7}, {\tt \%g} & \\ \hline
+8 & {\tt \%8}, {\tt \%h} & \\ \hline
+9 & {\tt \%9}, {\tt \%i} & \\ \hline
+10 & {\tt \%10}, {\tt \%c1} & \\ \hline
+11 & {\tt \%11}, {\tt \%c2} & \\ \hline
+12 & {\tt \%12}, {\tt \%ip} & \\ \hline
+13 & {\tt \%13}, {\tt \%st} & \\ \hline
+14 & {\tt \%14}, {\tt \%in} & \\ \hline
+15 & {\tt \%15}, {\tt \%pt} & \\ \hline
+\end{tabularx}
+
+\subsection{Zero Register}
+Register 0, or the zero register, will always have all of its bits read zero. Any instructions that write to this register will silently fail.
+
+\subsection{General Purpose Registers}
+Registers 1--9, or the general purpose registers A--I,
+
+\subsection{Comparison Registers}
+
+\subsection{Instruction Pointer Register}
+
+\subsection{Status Register}
+Register 13, or the status register, contains bits that represent the current status of the processor, including cartain bits which can be set to affect how the processor operates.
+
+\begin{figure}[ht]
+\centering
+\begin{bytefield}{32}
+\bitheader{31,30,29,28,27,26,2,1,0} \\
+\bitbox{1}{${\scriptstyle <_\text{S}}$} &
+\bitbox{1}{${\scriptstyle >_\text{S}}$} &
+\bitbox{1}{${\scriptstyle <_\text{U}}$} &
+\bitbox{1}{${\scriptstyle >_\text{U}}$} &
+\bitbox{1}{$=$} &
+\bitbox{25}{Reserved} &
+\bitbox{1}{O} &
+\bitbox{1}{I}
+\end{bytefield}
+\caption{The bit format for the contents of the status register.}
+\label{srf}
+\end{figure}
+
+The five most sigificant bits of the status register shown in Figure~\ref{srf} represent the results of comparison of the comparison registers. The bits each represent, in decreasing significance,
+
+\subsection{Interrupt Register}
+Register 14, or the interrupt register,
+
+\subsection{Page Table Pointer Register}
+Register 15, or the page table pointer register,
+
+\section{Data Types}
+The SfS ISA uses two primary data types: words and bytes. Words are 32 bits in size, and bytes are 8 bits in size. Bytes are only supported in memory accesses and are implicitly converted to and from words in these operations.
+
+\section{Instruction Format}
+The SfS ISA uses four formats for instructions: one each for operations on registers with registers, operations on registers with immediate values, conditional jumps, and memory access. The most significant two bits of each instruction indicate its format.
+
+\subsection{Register-Register Operations}
+The register-register operation instruction format is used to conditionally perform arithmetic or bitwise operations on registers.
+
+\begin{figure}[ht]
+\centering
+\begin{bytefield}{32}
+\bitheader{31,30,29,26,25,22,21,18,17,14,13,4,3,0} \\
+\bitboxes*{1}{00} &
+\bitbox{4}{Opcode} &
+\bitbox{4}{SR1} &
+\bitbox{4}{SR2} &
+\bitbox{4}{DR} &
+\bitbox{10}{Reserved} &
+\bitbox{4}{SM}
+\end{bytefield}
+\caption{The bit format for register-register operation instructions.}
+\label{rroif}
+\end{figure}
+
+For the instruction shown in Figure~\ref{rroif}, the instruction would perform the operation specified by the opcode on the values in the register specified by SR1 and SR2 (for non-commutative operations like shifting, SR1 represents the first argument and SR2 represents the second) and store the result in the register specified by DR if the bits in SM match the flags in the status register.
+
+\subsection{Register-Immediate Operations}
+The register-immediate operation instruction format is used to perform arithmetic or bitwise operations on a register and an immediate value.
+
+\begin{figure}[ht]
+\centering
+\begin{bytefield}{32}
+\bitheader{31,30,29,26,25,22,21,0} \\
+\bitboxes*{1}{01} &
+\bitbox{4}{Opcode} &
+\bitbox{4}{SR1} &
+\bitbox{22}{Immediate}
+\end{bytefield}
+\caption{The bit format for register-immediate operation instructions.}
+\label{rioif}
+\end{figure}
+
+For the instruction shown in Figure~\ref{rioif}, the instruction would perform the operation specified by the opcode on the values in the register specified by SR1 and the immediate value, interpreted as either a zero- or sign-extended 32-bit value, depending on the opcode, (for non-commutative operations like shifting, SR1 represents the first argument and the immediate value represents the second) and store the result in the register specified by SR1.
+
+\subsection{Conditional Jumps}
+The conditional jump instruction format is used to conditionally change the value of the instruction pointer.
+
+\begin{figure}[ht]
+\centering
+\begin{bytefield}{32}
+\bitheader{31,30,29,26,25,4,3,0} \\
+\bitboxes*{1}{10} &
+\bitbox{4}{BR} &
+\bitbox{22}{Offset} &
+\bitbox{4}{SM}
+\end{bytefield}
+\caption{The bit format for conditional jump instructions.}
+\label{cjif}
+\end{figure}
+
+For the instruction shown in Figure~\ref{cjif}, the instruction would move the value specified by adding the value in the register specified by BR to the offset shifted left by 2 bits, interpreted as a sign-extended 32-bit value, if the bits in SM match the flags in the status register.
+
+\subsection{Memory Access}
+The memory access instruction format is used to encode instructions which move words and bytes between registers and memory.
+
+\begin{figure}[ht]
+\centering
+\begin{bytefield}{32}
+\bitheader{31,30,29,26,25,22,21,2,1,0} \\
+\bitboxes*{1}{11} &
+\bitbox{4}{BR} &
+\bitbox{4}{DR} &
+\bitbox{20}{Offset} &
+\bitbox{1}{L} &
+\bitbox{1}{B}
+\end{bytefield}
+\caption{The bit format for memory access instructions.}
+\label{maif}
+\end{figure}
+
+For the instruction shown in Figure~\ref{maif}, the instruction would operate on the register specified by DR and the memory at the address specified by adding the value in the register specified by BR to the offset (interpreted as a sign-extended 32-bit value). The instruction will either store (move the register value into memory, if bit L is cleared) or load (move the value in memory into the register, if bit L is set) a word (if bit B is cleared) or a byte (if bit B is set).
+
+\subsection{Opcodes}
+The four opcode bits in the operation instruction formats encode information about the type of arithmetic or bitwise operation to be performed, as well as the interpretation of the immediate value (if there is one).
+
+\begin{tabularx}{\textwidth}{| c | c | c | X |} \hline
+Opcode & {\tt sfsasm} RRO Name & {\tt sfsasm} RIO Name & Description \\ \hline
+0000 & {\tt add} & {\tt addi} & Adds the arguments, interpreting both arguments as 32-bit unsigned integers, setting the overflow status flag if the result cannot be represented as a 32-bit unsigned integer. \\ \hline
+0001 & {\tt adds} & {\tt addsi} & Adds the arguments, interpreting both arguments as 32-bit signed integers, setting the overflow status flag if the result cannot be represented as a 32-bit signed integer. \\ \hline
+0010 & {\tt sub} & {\tt subi} & Subtracts the second argument from the first argument, interpreting both arguments as 32-bit unsigned integers, setting the overflow status flag if the result cannot be represented as a 32-bit unsigned integer. \\ \hline
+0011 & {\tt subs} & {\tt subsi} & Subtracts the second argument from the first argument, interpreting both arguments as 32-bit signed integers, setting the overflow status flag if the result cannot be represented as a 32-bit signed integer. \\ \hline
+\end{tabularx}
+
+\begin{tabularx}{\textwidth}{| c | c | c | X |} \hline
+0100 & {\tt shl} & {\tt shli} & Shifts the first argument left by the number of bits specified in the second argument, filling the least significant bits with zeros, setting the overflow status flag if any of the discarded bits are non-zero. \\ \hline
+0101 & {\tt shls} & {\tt shlsi} & Shifts the first argument left by the number of bits specified in the second argument, filling the least significant bits with zeros, setting the overflow status flag if the result cannot be represented as a 32-bit signed integer. \\ \hline
+0110 & {\tt shr} & {\tt shri} & Shifts the first argument right by the number of bits specified in the second argument, filling the most significant bits with zeros, setting the overflow status flag if any of the discarded bits are non-zero. \\ \hline
+0111 & {\tt shrs} & {\tt shrsi} & Shifts the first argument right by the number of bits specified in the second argument, filling the least significant bits with the value of the original most significant bit. \\ \hline
+\end{tabularx}
+
+\begin{tabularx}{\textwidth}{| c | c | c | X |} \hline
+1000 & {\tt \%and} & {\tt \%andi} & \\ \hline
+1001 & {\tt \%xor} & {\tt \%xori} & \\ \hline
+1010 & {\tt \%or} & {\tt \%ori} & \\ \hline
+1011 & {\tt \%nor} & {\tt \%nori} & \\ \hline
+\end{tabularx}
+
+\begin{tabularx}{\textwidth}{| c | X |} \hline
+1100 & Reserved \\ \hline
+1101 & Reserved \\ \hline
+1110 & Reserved \\ \hline
+1111 & Reserved \\ \hline
+\end{tabularx}
+
+\subsection{Status Mask}
+The four SM bits in the conditionally-executing instruction formats encode information about the desired flags in the status register (which reflect the comparison of the values in the two comparison registers) to execute an instruction.
+
+\begin{figure}[ht]
+\centering
+\begin{bytefield}{4}
+\bitheader{3,2,1,0} \\
+\bitbox{1}{S} &
+\bitbox{1}{$<$} &
+\bitbox{1}{$=$} &
+\bitbox{1}{$>$}
+\end{bytefield}
+\caption{The bit format for the status mask bits in conditionally-executing instructions.}
+\label{smf}
+\end{figure}
+
+The most significant bit in the status mask shown in Figure~\ref{smf}, the S bit, will affect the interpretation of the values in the comparison registers. If the S bit is cleared, both of the values in the comparison registers will be interpreted as unsigned 32-bit integers. If the S bit is set, both of the values in the comparison registers will be interpreted as signed 32-bit integers.
+
+The following three least significant bits in the status mask shown in Figure~\ref{smf} indicate the type of comparisons that are to be evaluated. If the $<$ bit is set and the value in comparison register 1 is less than the value in comparison register 2 (when interpreted in the way that the S bit dictates), then the instruction containing the status mask will execute. Similarly, the instruction ontaining the status mask will also execute if the $=$ bit is set and the values in the comparison registers are equal or if the $>$ bit is set and the value in comparison register 1 is greater than the value in comparison register 2 (again, when interpreted in the way that the S bit dictates).
+
+\section{Instruction Set Reference}
+\subsection{NOP: Null Operation}
+\begin{bytefield}{32}
+\bitheader{31,29,28,26,25,0} \\
+\bitboxes*{1}{000} &
+\bitboxes*{1}{000} &
+\bitbox{26}{Nothing}
+\end{bytefield}
+\opdesc{NOP (0x00000000)}{IP$\leftarrow$IP}
+
 \end{document}
